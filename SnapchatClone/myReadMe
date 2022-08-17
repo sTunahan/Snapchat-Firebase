@@ -1,0 +1,116 @@
+
+
+Kullanılan Teknolojıler:
+    
+    Firebase
+    Tab bar controller ( viewcontroller ı tutup tabbar'a bırakırken show yerine present Modaly yapıpı özelliklerinden "presetation da" full screen 'ı seçerim)
+    Zamana göre Firebaseden Veriyi silme işlemi yaptırma
+    Image Slide Show ( useOf ImageSlideshow import )
+    
+
+Adımlar:
+
+    1. Kullanıcı gırıs ekran tasarımı yapılır.
+    2. Tabbar ıcın "identifler" 'ını verırız. toFeedVC
+    3. setting sayfası ıcın bır tane viewController sayfası olustururuz.Sonra bunu TabBar a eklemek ıcın tabbarımızı tutup vıewController'a segue yaparız ve buraad "Relationship Segue'den view controllers" ı seçeriz
+    4.Klasörleme yaptık delegateleri Delegate klasörü oluşturup içine attık , ViewControllerlarıda  ViewController'klasörü oluşturup  bunun içerisinde topladık.
+    
+    5. settings sayfasında buttonu tanımladık VC sine atadık
+    6.Upload sayfasında ımagevıew ve buttonu ekleyıp VC ye atadık
+    7.Feed sayfasında TableView ımızı yaptık ve VC ye attık
+    
+    8.tableview a tıklanınca bir sayfa açılıyordu ve bilgileri orada gösteriyorduk bunun ıcın bır tane daha "VewController" oluştururuz.Feed sayfasından olusturdugumuz SnapVC ye show segue yapacağız."Identifler" değerine "toSnapVC" yaptık
+    
+    
+
+Kullanıcı Oluşturma :
+
+    9.Firebase'i İmport edeceğiz.Sonra gerekli Kodları yazacağız. SignUp Button ıcerısıni doldurduk . Kayıt ıslemı Ve kayıt işlemi gerceklesınce kullanıcı bılgılerını DB'ye Dictionary kayıdı oluşturarak kayıt etme işlemini yaptık.
+    
+    10.SignIn  Buttonuna Kayıtlı Kullanıcının Giriş işlemini Gerçekleştirme Olayı.
+    
+    
+Çıkış işlemi :
+
+    11. Her giriş yapıldığında kontrol yapılması gerekiyor.Kullanıcı ekranın gelıp gelmemesi ıcın,Kayıtlı kullanıcımı degılmı dıye
+    12.Tabbar 'a "storyboardID" si veririz.Eğer giriş yapıldıysa kullanıcımızı TABbar'a yönlendireceğiz hemen.
+    13."SceneDelegate" klasöründe ,işlemimizi yapacagız. Firebaseden Kullanıcı bilgisini sorgulamamız gerekıyor.Varmı yokmu kontrol edecegız.Kodları yazıyoruz.
+    14.Settings sayfasında çıkış ışlemını yapacagız.Bundan önce  signIn ekranına segue olusturmamız gerekıyor.Identifler e "toSıgnInVC" ismini veriyorz.
+    15.SettingsVC ye gelip kodlama işlemimizi yapıyoruz.Çıkış işlemi bir hata atan bir durum oldugu ıcın bunu DO-TRY-CATCH işlemi içerisinde gerçekleştiririz.
+    
+    
+Fotograf Seçmek:
+
+    16.Gerekli Kodlamaları yaptık,Resımı Galeriden seçebiliyoruz.
+    
+Kullanıcı Modeli:
+
+    17. Ben kullanıcı kullanıcı adı ile işlem yapmak istedigimden dolayı bunları almak ıstıyecegım.Upload ederken kımın ettıgının ısmınıde almam gerekıyor.vb...
+    
+    18.Kullanıcı bılgısını aldım e ben resımı upload ederken bu kullanıcı bılgısını nasıl yapacagız , her vıewcontroller a gelıp bu kullanıcı adını çekmeyemı çalışacagız hayır bunun ıcın bır class olusturacagız.Burada nasıl yapacagız.Feed e geldıgımızde kullanıcı adını çekecegız.Sonra dıger viewcontroller a yolluyoruz.
+    
+    19.FeedVC geliyoruz.Gerekli Değişkeni ve gerekli methodları tanımlıyoruz.
+    20. fireStoreDatabase.collection("UserInfo").getDocuments(completion: <#T##(QuerySnapshot?, Error?) -> Void#>)  // diret .getDocuments diyerek butun bılgılerı almıs oluruz ancak biz emaili şu alanın userName ini al demek ıcın whereField("email", in: <#T##[Any]#>)  kullanacagız.  (INSTAGRAM CLONE de mantıgını anlatıyoruz.)
+    
+    21. Klasörleme yapısına geçiş yapıyoruz. Model adında bir klasör oluşturuyoruz.İçine SwiftFile dosyası oluştururuz.Ve Signleton classı oluştururuz.
+    
+    22.FeedVC de getUserInfo() methodu ıcerısınde  username'e ulaştıgım zaman block ıcerısınde cagırıyorum.Böyle yaparak email degerımı ve username degerımı En baştan Feed sayfasından UserSingleton sınıfındaki değişkenlere atamış olurum.Böylelikle diger VİEWCONTROLLER kısımlarında kolaylıkla çağırmış oluruz.
+    
+    
+    
+UPLOAD olayı:
+
+    23. Upload olayında her resmı ayrı ayrı documentslere koymak ıstemıyoruz.UploadVC De kodlamamızı yapıyoruz.
+    
+    24. import FirebaseFirestore,import FirebaseStorage  kütüphanelerini yükledik.Button ıcerısınde firebase'e kayıt etme islemini tamamladık
+    
+    25. Şimdi ben 2 veya daha fazla resim upload ettigimde FirebaseData ya geldıgımda "Snap" collection içinde her resım ıcın ayrı ayrı document oluşcak.Ancak Böyle olunca Hata ile karşılaşacağım.Bunu önlemek için  Tek bir kullanıcının  sadece tek bir post'unun olmasını ıstıyorum.Adam oraya tıklayınca diğer storylere felan bakabılsın.Bu yüzden "UploadVC" yi biraz değiştirmem lazım.
+    
+    26. FireStore İleri seviye Konusuna girmiş oluyoruz.Nasıl yapacagız . Upload a basılınca  Kullanıcımın Snaps'i varmı yokmu kontrol etmek  eğer var ise "imageUrl" içerisine bir tane daha imageUrl'e eklemek.Yani bunu bir dizi haline getirmek Bu yuzden imageUrl demiycez imageUrlArray diycez.
+    
+    27. fireStore.collection("Snaps").document(documentId).setData(additionalDictionary, merge: true) de kullanılan "merge" eski verileri tut yeni veriyi üstüne ekle demek için kullanırız.
+    
+
+FeedVC olayı:
+
+    28.tableView ıma hücre veriyorum, içerisine Hangi kullanıcının oldugunu göstermek için Label,İmageView koyuyorum.
+    
+    29.UITableViewCell Oluşturacağız cocoatoch ile
+    30.FeedVC ye gelip Tableview ile ilgili bir işlem yapmadık onları yapalım sonra FeedCell e geçecegiz.Gereklli methodları cagırdık TableView ıcın olanları Sonra ben Firebaseden verileri cekip cell nesnemizin değişkenlerine atamam gerekiyor.Bunun ıcın "getSnapsFromFirebase()" methodu oluştururuz.
+    
+    31. Firebaseden alınan veya Internette bulunan  url lerı mobil uygulamada gösterebılmek ıcın bır hazır kutuphane olan " sd web image " i indirmemiz gerekiyor.
+    
+    32.Alınan urldeki resimi artık ImageView da gösterebileceğim. FeedVC ( line 73 )
+    
+    33. Şimdi  FeedVC basılınca SnapVC sayfası acılıp kullanıcının butun gönderılerını gösterecek olan sayfaya gıtmem gerekıyor.Bunun ıcın snapArray'imden seçilen Snap'i diger tarafa atmam gerekiyor.2.olarak ne kadar zaman kaldıgını aktarmam gerekıyor. O yüzden bu ıkısı ıcınde bir degısken olustururuz "FeedVC" de Sonde aktarma işlemini
+        prepare() methodunda yapılır.Ve didSelectRowAt ' methodlarını kullanırım.FeedVC de olusturmus oldugum chosenSnap ve Timeleft degıskenlerının karsılıgını "SnapVC" dede oluşturmam gerekiyor.
+        
+    34.SnapVC içerisinde Verileri Gösterme Adımına geçiyoruz. "SnapVC" dosyasına kodları yazıyoruz.
+    
+    
+Image Slide :
+    
+    
+    35. google'a "horizontal image slider in swift" deriz.Buda bir kütüphane bunuda pod 'a yukluyoruz.Ve içerisinde Kingfisher kütüphanesinide kullanıyoruz "SDWebImage" kütüphanesi yerine bu kullanılan Kingfisher daha hızlı etki veriyor burada.Buda ınternetten resim kullanabilmemize yarıyor.
+    
+    36.SnapVC dosyasında işlemlerimizi yapacağız bu yüzden yukarıdaki kütüphaneleri import etmemiz gerekiyor.Daha sonra if let leri oluşturarak block ıcerısını dolduruyoruz.
+    
+    
+Iyileştirme :
+
+
+    Şimdi başka bir kullanıcı kayıdı oluşturup önceki kullanıcının paylaşmış oldugu gönderi ve sonradan girdiğimiz kullanıcının gönderisi FeedVc Sayfasında görüncekmi onu denememiz gerekyor. Bu çalışıyor.
+    
+    Şimdi Burada Bir yanlışımız var İki kullanıcının gönderilerindede  Time Left aynı  bunu düzeltmemiz gerekiyor. FeedVC içerisine gidiyoruz.TimeLeft'i burada hesaplıyoruz.Çözümü
+    FeedVC de yapmak yerine  Snap modelimizde bunu çözeriz orada "var timeDifference" değişkenini kodlarız. Sonra Feed'den timelEft degıskenını sıldık ve SnapVC gelerekte buradaki bazı degıskenı ve kodu sileriz. direkt  if let snap calısında buradan timeLabel'ımızı degıstırırız.
+    
+    
+    
+    BURADA DÜZELTİLMESİ GEREKENLER ŞUNLAR BAŞKA BİR İŞTE ÇALIŞIRKEN  BUTUN URL'ADRESLERİ SADECE BİR TANE TİME DA TUTULUYOR  23 SAAT ÖNCE OLUSTURULUP 1 GUN SONRA YENI BIR RESIM ATILDIGINDA 23 SAATLIK OLANIN SURESI DOLDUGUNDA BUTUN URL LER SILINECEK BUNU ŞU SEKILDE DUZELTIRIZ TEKRARDAN GERIYE KALAN URLLERIN ZAMANLARINI OLUSTURARAK SILINMESINI ONLIYEBILIRIZ.
+    
+    
+    
+    
+    
+    
+    
